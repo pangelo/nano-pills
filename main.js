@@ -6,7 +6,7 @@ window.onload = function () {
 	game.score = 0;
     game.touched = false;
 	
-	game.preload('img/graphic.png', 'img/icon1.png');
+	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pills.png');
 	
 	game.onload = function () {
 	
@@ -42,13 +42,13 @@ var Player = enchant.Class.create(enchant.Sprite, {
  
 	initialize: function (x, y) {
        
-        enchant.Sprite.call(this, 16, 16);        
-        this.image = game.assets['img/graphic.png'];
+        enchant.Sprite.call(this, 8, 19);        
+        this.image = game.assets['img/pills.png'];
         
         this.x = x;
         this.y = y;
 
-        this.frame = [0]; //CApsula animada
+        this.frame = [0]; //Capsula animada
 		
 		
 		this.num_anti = 8;
@@ -153,11 +153,11 @@ var VirusSpawn = enchant.Class.create(Virus, {
 
 var AntiVirus = enchant.Class.create(enchant.Sprite, {
     initialize: function (x, y, direction, type) {
-        enchant.Sprite.call(this, 16, 16);
-        this.image = game.assets['img/icon1.png'];
+        enchant.Sprite.call(this, 10, 15);
+        this.image = game.assets['img/cell3.png'];
         this.x = x;
         this.y = y;
-        this.frame = [0,1];
+        this.frame = [0];
         this.direction = direction;
         this.moveSpeed = 2;
         this.addEventListener('enterframe', function () {
@@ -203,9 +203,19 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
 
 var AntiVirusSpawn = enchant.Class.create(AntiVirus, {
     initialize: function (x, y) {
-        AntiVirus.call(this, x+Math.random()*10, y+Math.random()*10, 0);
+        AntiVirus.call(this, x+Math.random()*50, y+Math.random()*50, 0);
         this.addEventListener('enterframe', function () {
 		
+		// NEED REDONE!
+			if(Math.random >> 0.5) { 
+				this.direction+= Math.random() * 10;
+			}else{
+				this.direction-= Math.random() * 10;
+			}
+		
+		// MOVEMENT
+            this.x += this.moveSpeed * Math.cos(this.direction);
+            this.y += this.moveSpeed * Math.sin(this.direction);
 			// HIT TEST
             for (var i in VirusArray) {
                 if(VirusArray[i].intersect(this)) {
@@ -227,7 +237,7 @@ var AntiVirusSpawn = enchant.Class.create(AntiVirus, {
 
 function createLevel() {
 	
-	for(var i = 0; i < 20 ; i++){
+	for(var i = 0; i < 5 ; i++){
 		console.log("CREAT A NEW VIRUS");
 		posX = Math.random()*100;
 		posY = Math.random()*100;
