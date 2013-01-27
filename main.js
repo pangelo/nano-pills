@@ -6,7 +6,7 @@ window.onload = function () {
 	game.score = 0;
     game.touched = false;
 	
-	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pills.png', 'img/cell_400.png');
+	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pill_400_2.gif', 'img/cell_400.png', 'img/5_400_b.gif','img/virus_sequence.gif', 'img/bg2.gif', 'img/kjhkjhkj.gif');
 	
 	game.onload = function () {
 	
@@ -14,6 +14,7 @@ window.onload = function () {
 		AntiVirusArray = new Array();
 		
 		game.rootScene.backgroundColor = 'black';
+		var background = new Background ();
 		
 		createLevel();
 		
@@ -27,6 +28,7 @@ window.onload = function () {
 		
 		game.rootScene.addEventListener("touchstart", function (evt) {
 			var player = new Player(evt.x, evt.y);
+			//var background = new Background ();
 		});
 		
 		scoreLabel = new ScoreLabel(8, 8);
@@ -36,14 +38,25 @@ window.onload = function () {
     game.start();
 };
 
+var Background = enchant.Class.create (enchant.Sprite, {
+	initialize: function () {
+		enchant.Sprite.call(this, game.width, game.height);
+		this.image = game.assets['img/bg2.gif'];
+		this.x = 0;
+		this.y = 0;
+		this.frame = [0];
+		
+		game.rootScene.addChild(this);
+	}
+});
 
 var Player = enchant.Class.create(enchant.Sprite, {
 	
  
 	initialize: function (x, y) {
        
-        enchant.Sprite.call(this, 8, 19);        
-        this.image = game.assets['img/pills.png'];
+        enchant.Sprite.call(this, 25, 40);        
+        this.image = game.assets['img/pill_400_2.gif'];
         
         this.x = x;
         this.y = y;
@@ -81,15 +94,22 @@ var Player = enchant.Class.create(enchant.Sprite, {
 
 var Virus = enchant.Class.create(enchant.Sprite, {
     initialize: function (x, y, direction, type) {
-        enchant.Sprite.call(this, 16, 16);
-        this.image = game.assets['img/icon1.png'];
+        enchant.Sprite.call(this, 29, 25);
+        //this.image = game.assets['img/icon1.png'];
+		this.image = game.assets['img/kjhkjhkj.gif'];
         this.x = x;
         this.y = y;
-        this.frame = [4,5,6];
+		var framelist = [];
+		for (var i=0; i < 120; i++) {
+			framelist.push(i);
+		}
+		this.frame = framelist;
         this.direction = direction;
-        this.moveSpeed = 8;
+        this.moveSpeed = 4;
         this.addEventListener('enterframe', function () {
 		this.type = type;
+		
+		
 		
 			// NEED REDONE!
 			if(game.frame % game.fps == 0){
@@ -129,7 +149,7 @@ var Virus = enchant.Class.create(enchant.Sprite, {
 
 var VirusSpawn = enchant.Class.create(Virus, {
     initialize: function (x, y) {
-        Virus.call(this, x+Math.random()*5, y+Math.random()*5, 0);
+        Virus.call(this, x, y, 0);
         this.addEventListener('enterframe', function () {
 			// HIT TEST
 			/*
@@ -158,9 +178,9 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
 		this.image = game.assets['img/cell_400.png'];
         this.x = x;
         this.y = y;
-        this.frame = [0,1,2,3,4,5,6,7,8];
+        this.frame = [0];
         this.direction = direction;
-        this.moveSpeed = 2;
+        this.moveSpeed = 4;
         this.addEventListener('enterframe', function () {
 		this.type = type;	
 			
@@ -168,9 +188,9 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
 			
 			// NEED REDONE!
 			if(Math.random >> 0.5) { 
-				this.direction+= Math.random() * 10;
+				this.direction+= Math.random();
 			}else{
-				this.direction-= Math.random() * 10;
+				this.direction-= Math.random();
 			}
 			
 		
@@ -214,9 +234,7 @@ var AntiVirusSpawn = enchant.Class.create(AntiVirus, {
 				this.direction-= Math.random() * 10;
 			}
 		
-		// MOVEMENT
-            this.x += this.moveSpeed * Math.cos(this.direction);
-            this.y += this.moveSpeed * Math.sin(this.direction);
+	
 			// HIT TEST
             for (var i in VirusArray) {
                 if(VirusArray[i].intersect(this)) {
@@ -240,12 +258,23 @@ function createLevel() {
 	
 	for(var i = 0; i < 5 ; i++){
 		console.log("CREAT A NEW VIRUS");
-		posX = Math.random()*100;
-		posY = Math.random()*100;
+		posX = Math.random()*300;
+		posY = Math.random()*400;
 		
 		var s = new VirusSpawn(posX, posY);
 		//var s = new VirusSpawn(200, 200);
 		
 		VirusArray.push(s);
     }
+	/* */
+	for(var j = 0; j < 5 ; j++){
+		console.log("CREAT A NEW VIRUS");
+		posX = Math.random()*500;
+		posY = Math.random()*600;
+		
+		var s1 = new VirusSpawn(400, 500);
+		
+		VirusArray.push(s1);
+    }
+			
 }
