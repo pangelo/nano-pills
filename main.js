@@ -23,6 +23,8 @@ window.onload = function () {
 		game.rootScene.addEventListener('enterframe', function () {
 			scoreLabel.score = game.score;
 			
+			
+			
 			// barra de tempo
 		});
 		
@@ -77,9 +79,10 @@ var Player = enchant.Class.create(enchant.Sprite, {
 			//if(game.frame % game.fps/num_time_spawn_anti == 0){
 			if(game.frame % game.fps == 0){
 				for(var i = 0; i < this.num_anti; i++){
-					console.log("SPAWN ANTIVIRUS");
+					//console.log("SPAWN ANTIVIRUS");
 				
 					var anti = new AntiVirusSpawn(this.x, this.y);
+					AntiVirusArray.push(anti);					
 				}
 			}
 			
@@ -108,9 +111,8 @@ var Virus = enchant.Class.create(enchant.Sprite, {
         this.moveSpeed = 4;
         this.addEventListener('enterframe', function () {
 		this.type = type;
-		
-		
-		
+		this.arrapos = VirusArray.lenght;
+
 			// NEED REDONE!
 			if(game.frame % game.fps == 0){
 				if(Math.random >> 0.5) { 
@@ -141,6 +143,9 @@ var Virus = enchant.Class.create(enchant.Sprite, {
         game.rootScene.addChild(this);
     },
     remove: function () {
+	
+		console.log(VirusArray);
+		VirusArray=VirusArray.slice(this.arrapos,1);
         game.rootScene.removeChild(this);
         delete this;
     }
@@ -183,7 +188,7 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
         this.moveSpeed = 4;
         this.addEventListener('enterframe', function () {
 		this.type = type;	
-			
+		this.arrapos = AntiVirusArray.lenght;	
 			
 			
 			// NEED REDONE!
@@ -216,6 +221,7 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
         game.rootScene.addChild(this);
     },
     remove: function () {
+		AntiVirusArray=AntiVirusArray.slice(this.arrapos,1);
         game.rootScene.removeChild(this);
         delete this;
     }
@@ -238,7 +244,7 @@ var AntiVirusSpawn = enchant.Class.create(AntiVirus, {
 			// HIT TEST
             for (var i in VirusArray) {
                 if(VirusArray[i].intersect(this)) {
-				
+					console.log("ARR.lenght"+VirusArray.lenght());
 					if( VirusArray[i].type == this.type) { //AHAHA  somos do mesmo tipo
 						this.remove();
 						VirusArray[i].remove();
@@ -249,6 +255,120 @@ var AntiVirusSpawn = enchant.Class.create(AntiVirus, {
                     
                 }
             }
+        });
+    }
+});
+
+var Celula = enchant.Class.create(enchant.Sprite, {
+    initialize: function (x, y, direction, type) {
+        enchant.Sprite.call(this, 16, 16);
+        this.image = game.assets['img/icon1.png'];
+        this.x = x;
+        this.y = y;
+        this.frame = [1];
+        this.direction = direction;
+        this.moveSpeed = 2;	
+        this.addEventListener('enterframe', function () {
+		this.type = type;
+		
+			// NEED REDONE!
+			if(game.frame % game.fps == 0){
+				if(Math.random >> 0.5) { 
+					this.direction+= Math.random() * 10;
+				}else{
+					this.direction-= Math.random() * 10;
+				}
+			}
+		
+			// MOVEMENT
+            this.x += this.moveSpeed * Math.cos(this.direction);
+            this.y += this.moveSpeed * Math.sin(this.direction);
+			
+			//OFFSCREEN
+			if(this.y > 302) {
+				this.moveSpeed = this.moveSpeed * (-1);				
+			}
+			if(this.y < 16) {
+				this.moveSpeed = this.moveSpeed * (-1);				
+			}
+			if(this.x > 302) {				
+				this.moveSpeed = this.moveSpeed * (-1);				
+			}
+			if(this.x < 0) {
+				this.moveSpeed = this.moveSpeed * (-1);				
+			}
+        });
+        game.rootScene.addChild(this);
+    },
+    remove: function () {
+        game.rootScene.removeChild(this);
+        delete this;
+    }
+});
+
+
+var CelulaSpawn = enchant.Class.create(Celula, {
+    initialize: function (x, y) {
+        Celula.call(this, x+Math.random()*5, y+Math.random()*5, 0);
+		this.cellstatus = 0;
+        this.addEventListener('enterframe', function () {
+			if(game.frame % game.fps == 0){
+				if(this.cellstatus == 2){
+					var s = new AntiVirusSpawn(this.x, this.y);
+					this.frame = [1];
+					AntiVirusArray.push(s);
+				}
+				if(this.cellstatus == 1){
+					console.log("cellstatus"+this.cellstatus);
+					
+					var s = new VirusSpawn(this.x, this.y);
+					this.frame = [5];
+					VirusArray.push(s);
+				}
+			}
+			// HIT TEST
+            for (var i in VirusArray) {
+                if(VirusArray[i].intersect(this)) {
+					if( this.cellstatus == 2 || this.cellstatus == 0){
+					
+						//console.log(' anti length'+VirusArray.length);
+						VirusArray[i].remove();
+						game.score -= 50;
+					}
+					if(this.cellstatus == 2){
+						this.cellstatus = 0;
+						this.frame = [2];
+						
+					}
+					if(this.cellstatus == 0){
+						this.cellstatus = 1;
+						this.frame = [5];
+					}
+					break;
+                }
+            }
+			for (var i in AntiVirusArray) {
+                if(AntiVirusArray[i].intersect(this)) {
+					
+					if( this.cellstatus == 2 || this.cellstatus == 0){
+						//console.log(' virus lenghr'+VirusArray.length);
+						AntiVirusArray[i].remove();
+						game.score += 50;
+					}					
+					if(this.cellstatus == 1){
+						this.cellstatus = 0;
+						this.frame = [7];
+					}
+					if(this.cellstatus == 0){
+						this.cellstatus = 2;
+						this.frame = [4];
+					}
+					
+                }
+				
+            }
+			
+			
         });
     }
 });
@@ -265,6 +385,15 @@ function createLevel() {
 		//var s = new VirusSpawn(200, 200);
 		
 		VirusArray.push(s);
+		console.log("VirusArray.len"+VirusArray.length);
+    }
+	for(var i = 0; i < 5 ; i++){
+		//console.log("CREAT A NEW VIRUS");
+		posX = Math.random()*100+150;
+		posY = Math.random()*100+150;
+		
+		var c = new CelulaSpawn(posX, posY);
+		
     }
 	/* */
 	for(var j = 0; j < 5 ; j++){
