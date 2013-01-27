@@ -7,7 +7,6 @@ window.onload = function () {
     game.touched = false;	
 	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pill_400_2.gif', 'img/cell_400.png', 'img/5_400_b.gif','img/virus_sequence.gif', 'img/bg_ok.gif', 'img/sprite2.gif');
 
-	
 	game.onload = function () {
 	
 		VirusArray = new Array();
@@ -18,8 +17,6 @@ window.onload = function () {
 		
 		createLevel();
 	
-		
-		
 		game.rootScene.addEventListener('enterframe', function () {
 			scoreLabel.score = game.score;
 			
@@ -112,7 +109,7 @@ var Virus = enchant.Class.create(enchant.Sprite, {
         this.moveSpeed = 4;
         this.addEventListener('enterframe', function () {
 		this.type = type;
-		this.arrapos = VirusArray.lenght;
+		this.arrapos = VirusArray.length;
 
 			// NEED REDONE!
 			if(game.frame % game.fps == 0){
@@ -144,9 +141,6 @@ var Virus = enchant.Class.create(enchant.Sprite, {
         game.rootScene.addChild(this);
     },
     remove: function () {
-	
-		console.log(VirusArray);
-		VirusArray=VirusArray.slice(this.arrapos,1);
         game.rootScene.removeChild(this);
         delete this;
     }
@@ -188,9 +182,7 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
         this.direction = direction;
         this.moveSpeed = 4;
         this.addEventListener('enterframe', function () {
-		this.type = type;	
-		this.arrapos = AntiVirusArray.lenght;	
-			
+		this.type = type;		
 			
 			// NEED REDONE!
 			if(Math.random >> 0.5) { 
@@ -222,7 +214,6 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
         game.rootScene.addChild(this);
     },
     remove: function () {
-		AntiVirusArray=AntiVirusArray.slice(this.arrapos,1);
         game.rootScene.removeChild(this);
         delete this;
     }
@@ -243,10 +234,10 @@ var AntiVirusSpawn = enchant.Class.create(AntiVirus, {
 		
 	
 			// HIT TEST
-            for (var i in VirusArray) {
+            for (var i = 0; i < VirusArray.length; i++) {
                 if(VirusArray[i].intersect(this)) {
-					console.log("ARR.lenght"+VirusArray.lenght());
-					if( VirusArray[i].type == this.type) { //AHAHA  somos do mesmo tipo
+					console.log("ARR.lenght"+VirusArray.length);
+					if( VirusArray[i].type !== this.type) { //AHAHA  somos do mesmo tipo
 						this.remove();
 						VirusArray[i].remove();
 						game.score += 100;					
