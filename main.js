@@ -4,9 +4,9 @@ window.onload = function () {
 	game = new Game(800, 600);
 	game.fps = 24;
 	game.score = 0;
-    game.touched = false;
-	
-	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pill_400_2.gif', 'img/cell_400.png', 'img/5_400_b.gif','img/virus_sequence.gif', 'img/bg2.gif', 'img/kjhkjhkj.gif');
+    game.touched = false;	
+	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pill_400_2.gif', 'img/cell_400.png', 'img/5_400_b.gif','img/virus_sequence.gif', 'img/bg_ok.gif', 'img/sprite2.gif');
+
 	
 	game.onload = function () {
 	
@@ -17,7 +17,7 @@ window.onload = function () {
 		var background = new Background ();
 		
 		createLevel();
-		
+	
 		
 		
 		game.rootScene.addEventListener('enterframe', function () {
@@ -30,7 +30,8 @@ window.onload = function () {
 		
 		game.rootScene.addEventListener("touchstart", function (evt) {
 			var player = new Player(evt.x, evt.y);
-			//var background = new Background ();
+			
+			
 		});
 		
 		scoreLabel = new ScoreLabel(8, 8);
@@ -43,7 +44,7 @@ window.onload = function () {
 var Background = enchant.Class.create (enchant.Sprite, {
 	initialize: function () {
 		enchant.Sprite.call(this, game.width, game.height);
-		this.image = game.assets['img/bg2.gif'];
+		this.image = game.assets['img/bg_ok.gif'];
 		this.x = 0;
 		this.y = 0;
 		this.frame = [0];
@@ -99,7 +100,7 @@ var Virus = enchant.Class.create(enchant.Sprite, {
     initialize: function (x, y, direction, type) {
         enchant.Sprite.call(this, 29, 25);
         //this.image = game.assets['img/icon1.png'];
-		this.image = game.assets['img/kjhkjhkj.gif'];
+		this.image = game.assets['img/sprite2.gif'];
         this.x = x;
         this.y = y;
 		var framelist = [];
@@ -405,5 +406,8 @@ function createLevel() {
 		
 		VirusArray.push(s1);
     }
+	
+	
+	
 			
 }
