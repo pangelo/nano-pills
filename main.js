@@ -1,12 +1,12 @@
 enchant();
 
 window.onload = function () {
-	game = new Game(320, 320);
+	game = new Game(800, 600);
 	game.fps = 24;
 	game.score = 0;
     game.touched = false;
 	
-	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pills.png');
+	game.preload('img/cell3.png', 'img/icon1.png' , 'img/pills.png', 'img/cell_400.png');
 	
 	game.onload = function () {
 	
@@ -129,7 +129,7 @@ var Virus = enchant.Class.create(enchant.Sprite, {
 
 var VirusSpawn = enchant.Class.create(Virus, {
     initialize: function (x, y) {
-        Virus.call(this, x, y, 0);
+        Virus.call(this, x+Math.random()*5, y+Math.random()*5, 0);
         this.addEventListener('enterframe', function () {
 			// HIT TEST
 			/*
@@ -153,11 +153,12 @@ var VirusSpawn = enchant.Class.create(Virus, {
 
 var AntiVirus = enchant.Class.create(enchant.Sprite, {
     initialize: function (x, y, direction, type) {
-        enchant.Sprite.call(this, 10, 15);
-        this.image = game.assets['img/cell3.png'];
+        enchant.Sprite.call(this, 16, 16);
+        //this.image = game.assets['img/cell3.png'];
+		this.image = game.assets['img/cell_400.png'];
         this.x = x;
         this.y = y;
-        this.frame = [0];
+        this.frame = [0,1,2,3,4,5,6,7,8];
         this.direction = direction;
         this.moveSpeed = 2;
         this.addEventListener('enterframe', function () {
@@ -203,7 +204,7 @@ var AntiVirus = enchant.Class.create(enchant.Sprite, {
 
 var AntiVirusSpawn = enchant.Class.create(AntiVirus, {
     initialize: function (x, y) {
-        AntiVirus.call(this, x+Math.random()*50, y+Math.random()*50, 0);
+        AntiVirus.call(this, x+Math.random()*5, y+Math.random()*5, 0);
         this.addEventListener('enterframe', function () {
 		
 		// NEED REDONE!
